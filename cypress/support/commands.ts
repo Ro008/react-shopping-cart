@@ -5,6 +5,7 @@ let selectedProductDetails: { name: any; };
 
 Cypress.Commands.add('goToShoppingCartHomepage' as any, () => {
     cy.visit('http://localhost:3000/')
+    cy.url().should('eq', 'http://localhost:3000/')
 })
 
 
