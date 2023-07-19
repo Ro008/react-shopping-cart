@@ -49,5 +49,6 @@ npm start
 
 
 ## How to run the tests using Cypress UI
-1. run in your terminal `npx cypress open`
-2. click on the test you want to run.
+1. run in your terminal `npx cypress open`. This will open the Cypress Task Runner
+2. from the Cypress Task Runner, go to *Specs* and click on the test you want to run
+- you can run the tests in the order you prefer
