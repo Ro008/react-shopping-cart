@@ -1,37 +1,41 @@
 /// <reference types="cypress" />
 // ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+
+let selectedProductDetails: { name: any; };
+
+Cypress.Commands.add('goToShoppingCartHomepage' as any, () => {
+    cy.visit('http://localhost:3000/')
+})
+
+
+Cypress.Commands.add('selectRandomProduct' as any, () => {
+    cy.get('.Product__Container-sc-124al1g-2')
+        .find('button')
+        .then(buttons => {
+            const randomIndex = Cypress._.random(0, buttons.length - 1);
+            const selectedButtonNumber = randomIndex + 1; // Add 1 to display human-readable number
+            cy.log(`Product number ${selectedButtonNumber} of the list`);
+
+            // Click the "Add to cart" button
+            cy.wrap(buttons[randomIndex]).click();
+
+            // Get the product details
+            cy.wrap(buttons[randomIndex])
+                .closest('.Product__Container-sc-124al1g-2')
+                .then(product => {
+                    selectedProductDetails = {
+                        name: product.find('.Product__Title-sc-124al1g-4').text()
+                    };
+                });
+        });
+});
+
+
+Cypress.Commands.add('checkProductAddedToCart' as any, () => {
+    const selectedProductName = selectedProductDetails.name;
+    cy.log(`product selected: ${selectedProductName}`)
+    cy.get('.CartProduct__Title-sc-11uohgb-2').should('contain', selectedProductName);
+})
+
+
+
